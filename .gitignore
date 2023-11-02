@@ -1,0 +1,15 @@
+# Carpeta de configuración de Visual Studio
+.vscode/
+
+# Carpeta binaria de compilación
+/bin/
+/obj/
+
+# Archivos de configuración de usuario
+*.suo
+*.user
+*.sln.docstates
+
+# Directorio de paquetes NuGet
+/packages/
+*.nupkg

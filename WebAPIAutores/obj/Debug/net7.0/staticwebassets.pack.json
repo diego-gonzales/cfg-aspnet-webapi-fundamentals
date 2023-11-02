@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\wwwroot\\MyFile.txt",
+      "PackagePath": "staticwebassets\\MyFile.txt"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.WebAPIAutores.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.WebAPIAutores.props",
+      "PackagePath": "build\\WebAPIAutores.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.WebAPIAutores.props",
+      "PackagePath": "buildMultiTargeting\\WebAPIAutores.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.WebAPIAutores.props",
+      "PackagePath": "buildTransitive\\WebAPIAutores.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
