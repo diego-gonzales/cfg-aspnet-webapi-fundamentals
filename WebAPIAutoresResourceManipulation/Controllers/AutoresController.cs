@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPIAutoresResourceManipulation;
@@ -8,10 +9,12 @@ namespace WebAPIAutoresResourceManipulation;
 public class AutoresController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
+    private readonly IMapper mapper;
 
-    public AutoresController(ApplicationDbContext dbContext)
+    public AutoresController(ApplicationDbContext dbContext, IMapper mapper)
     {
         this.dbContext = dbContext;
+        this.mapper = mapper;
     }
 
     [HttpGet]
@@ -34,16 +37,20 @@ public class AutoresController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Post(Autor autor)
+    public async Task<ActionResult> Post(CreateAuthorDTO createAuthorDTO)
     {
-        var autorAlreadyExists = await dbContext.Autores.AnyAsync(x => x.Name == autor.Name);
+        var autorAlreadyExists = await dbContext.Autores.AnyAsync(
+            x => x.Name == createAuthorDTO.Name
+        );
 
         if (autorAlreadyExists)
         {
-            return BadRequest($"Ya existe un autor con el nombre {autor.Name}");
+            return BadRequest($"Ya existe un autor con el nombre {createAuthorDTO.Name}");
         }
 
-        dbContext.Add(autor);
+        var author = mapper.Map<Autor>(createAuthorDTO);
+
+        dbContext.Add(author);
         await dbContext.SaveChangesAsync();
         return Ok();
     }

@@ -19,6 +19,9 @@ public class Startup
         services.AddDbContext<ApplicationDbContext>(
             options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
         );
+
+        // después de instalar el automapper configuramos el servicio para poder usarlo
+        services.AddAutoMapper(typeof(Startup));
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

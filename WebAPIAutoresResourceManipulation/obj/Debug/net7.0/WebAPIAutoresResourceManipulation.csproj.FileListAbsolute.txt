@@ -75,3 +75,5 @@ D:\Online Courses\ASP.NET Core - Web APIs RESTful\WebAPIAutoresResourceManipulat
 D:\Online Courses\ASP.NET Core - Web APIs RESTful\WebAPIAutoresResourceManipulation\obj\Debug\net7.0\WebAPIAutoresResourceManipulation.pdb
 D:\Online Courses\ASP.NET Core - Web APIs RESTful\WebAPIAutoresResourceManipulation\obj\Debug\net7.0\WebAPIAutoresResourceManipulation.genruntimeconfig.cache
 D:\Online Courses\ASP.NET Core - Web APIs RESTful\WebAPIAutoresResourceManipulation\obj\Debug\net7.0\ref\WebAPIAutoresResourceManipulation.dll
+D:\Online Courses\ASP.NET Core - Web APIs RESTful\WebAPIAutoresResourceManipulation\bin\Debug\net7.0\AutoMapper.dll
+D:\Online Courses\ASP.NET Core - Web APIs RESTful\WebAPIAutoresResourceManipulation\bin\Debug\net7.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
