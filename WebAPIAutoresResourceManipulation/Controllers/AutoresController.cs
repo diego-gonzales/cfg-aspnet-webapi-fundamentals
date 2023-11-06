@@ -18,22 +18,23 @@ public class AutoresController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Autor>>> Get()
+    public async Task<ActionResult<List<AuthorDTO>>> Get()
     {
-        return await dbContext.Autores.ToListAsync();
+        var authors = await dbContext.Autores.ToListAsync();
+        return mapper.Map<List<AuthorDTO>>(authors);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Autor>> GetOne(int id)
+    public async Task<ActionResult<AuthorDTO>> GetOne(int id)
     {
-        var autor = await dbContext.Autores.FirstOrDefaultAsync(x => x.Id == id);
+        var author = await dbContext.Autores.FirstOrDefaultAsync(x => x.Id == id);
 
-        if (autor == null)
+        if (author == null)
         {
             return NotFound();
         }
 
-        return autor;
+        return mapper.Map<AuthorDTO>(author);
     }
 
     [HttpPost]
@@ -88,5 +89,13 @@ public class AutoresController : ControllerBase
         dbContext.Remove(new Autor { Id = id });
         await dbContext.SaveChangesAsync();
         return Ok();
+    }
+
+    [HttpGet("{name}")]
+    public async Task<ActionResult<List<AuthorDTO>>> GetByName(string name)
+    {
+        // 'Where' is part of LINQ
+        var authors = await dbContext.Autores.Where(x => x.Name.Contains(name)).ToListAsync();
+        return mapper.Map<List<AuthorDTO>>(authors);
     }
 }
