@@ -8,7 +8,7 @@ public class Autor
 
     [Required]
     [StringLength(
-        maximumLength: 50,
+        maximumLength: 150,
         ErrorMessage = "El campo '{0}' no debe tener más de {1} caracteres"
     )]
     [UpperFirstLetter]

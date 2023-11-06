@@ -33,18 +33,18 @@ public class LibrosController : ControllerBase
         return libro;
     }
 
-    [HttpPost]
-    public async Task<ActionResult> Post(Libro libro)
-    {
-        bool authorExists = await dbContext.Autores.AnyAsync(x => x.Id == libro.AutorId);
+    // [HttpPost]
+    // public async Task<ActionResult> Post(Libro libro)
+    // {
+    //     bool authorExists = await dbContext.Autores.AnyAsync(x => x.Id == libro.AutorId);
 
-        if (!authorExists)
-        {
-            return BadRequest($"No existe el autor con el id {libro.AutorId}");
-        }
+    //     if (!authorExists)
+    //     {
+    //         return BadRequest($"No existe el autor con el id {libro.AutorId}");
+    //     }
 
-        dbContext.Add(libro);
-        await dbContext.SaveChangesAsync();
-        return Ok();
-    }
+    //     dbContext.Add(libro);
+    //     await dbContext.SaveChangesAsync();
+    //     return Ok();
+    // }
 }
