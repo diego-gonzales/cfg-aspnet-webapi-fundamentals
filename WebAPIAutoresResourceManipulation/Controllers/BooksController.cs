@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 namespace WebAPIAutoresResourceManipulation;
 
 [ApiController]
-[Route("api/libros")]
-public class LibrosController : ControllerBase
+[Route("api/books")]
+public class BooksController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
     private readonly IMapper mapper;
 
-    public LibrosController(ApplicationDbContext dbContext, IMapper mapper)
+    public BooksController(ApplicationDbContext dbContext, IMapper mapper)
     {
         this.dbContext = dbContext;
         this.mapper = mapper;
@@ -47,7 +47,7 @@ public class LibrosController : ControllerBase
         //     return BadRequest($"No existe el autor con el id {libro.AutorId}");
         // }
 
-        var book = mapper.Map<Libro>(createBookDTO);
+        var book = mapper.Map<Book>(createBookDTO);
 
         dbContext.Add(book);
         await dbContext.SaveChangesAsync();

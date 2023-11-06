@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore;
 namespace WebAPIAutoresResourceManipulation;
 
 [ApiController]
-[Route("api/autores")]
-public class AutoresController : ControllerBase
+[Route("api/authors")]
+public class AuthorsController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
     private readonly IMapper mapper;
 
-    public AutoresController(ApplicationDbContext dbContext, IMapper mapper)
+    public AuthorsController(ApplicationDbContext dbContext, IMapper mapper)
     {
         this.dbContext = dbContext;
         this.mapper = mapper;
@@ -49,7 +49,7 @@ public class AutoresController : ControllerBase
             return BadRequest($"Ya existe un autor con el nombre {createAuthorDTO.Name}");
         }
 
-        var author = mapper.Map<Autor>(createAuthorDTO);
+        var author = mapper.Map<Author>(createAuthorDTO);
 
         dbContext.Add(author);
         await dbContext.SaveChangesAsync();
@@ -57,7 +57,7 @@ public class AutoresController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Put(int id, Autor autor)
+    public async Task<ActionResult> Put(int id, Author autor)
     {
         if (autor.Id != id)
         {
@@ -86,7 +86,7 @@ public class AutoresController : ControllerBase
             return NotFound();
         }
 
-        dbContext.Remove(new Autor { Id = id });
+        dbContext.Remove(new Author { Id = id });
         await dbContext.SaveChangesAsync();
         return Ok();
     }

@@ -2,14 +2,14 @@
 
 namespace WebAPIAutoresResourceManipulation;
 
-public class Libro
+public class Author
 {
     public int Id { get; set; }
 
     [Required]
     [StringLength(
-        maximumLength: 250,
-        ErrorMessage = "El campo {0} no debe tener más de {1} caracteres"
+        maximumLength: 150,
+        ErrorMessage = "El campo '{0}' no debe tener más de {1} caracteres"
     )]
     [UpperFirstLetter]
     public string Name { get; set; }
