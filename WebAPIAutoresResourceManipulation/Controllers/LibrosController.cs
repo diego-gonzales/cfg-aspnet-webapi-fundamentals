@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPIAutoresResourceManipulation;
@@ -8,43 +9,48 @@ namespace WebAPIAutoresResourceManipulation;
 public class LibrosController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
+    private readonly IMapper mapper;
 
-    public LibrosController(ApplicationDbContext dbContext)
+    public LibrosController(ApplicationDbContext dbContext, IMapper mapper)
     {
         this.dbContext = dbContext;
+        this.mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Libro>>> Get()
+    public async Task<ActionResult<List<BookDTO>>> Get()
     {
-        return await dbContext.Libros.ToListAsync();
+        var books = await dbContext.Libros.ToListAsync();
+        return mapper.Map<List<BookDTO>>(books);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Libro>> GetOne(int id)
+    public async Task<ActionResult<BookDTO>> GetOne(int id)
     {
-        var libro = await dbContext.Libros.FirstOrDefaultAsync(x => x.Id == id);
+        var book = await dbContext.Libros.FirstOrDefaultAsync(x => x.Id == id);
 
-        if (libro == null)
+        if (book == null)
         {
             return NotFound();
         }
 
-        return libro;
+        return mapper.Map<BookDTO>(book);
     }
 
-    // [HttpPost]
-    // public async Task<ActionResult> Post(Libro libro)
-    // {
-    //     bool authorExists = await dbContext.Autores.AnyAsync(x => x.Id == libro.AutorId);
+    [HttpPost]
+    public async Task<ActionResult> Post(CreateBookDTO createBookDTO)
+    {
+        // bool authorExists = await dbContext.Autores.AnyAsync(x => x.Id == libro.AutorId);
 
-    //     if (!authorExists)
-    //     {
-    //         return BadRequest($"No existe el autor con el id {libro.AutorId}");
-    //     }
+        // if (!authorExists)
+        // {
+        //     return BadRequest($"No existe el autor con el id {libro.AutorId}");
+        // }
 
-    //     dbContext.Add(libro);
-    //     await dbContext.SaveChangesAsync();
-    //     return Ok();
-    // }
+        var book = mapper.Map<Libro>(createBookDTO);
+
+        dbContext.Add(book);
+        await dbContext.SaveChangesAsync();
+        return Ok();
+    }
 }
