@@ -20,14 +20,16 @@ public class BooksController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<BookDTO>>> Get()
     {
-        var books = await dbContext.Libros.ToListAsync();
+        var books = await dbContext.Libros.Include(x => x.Comments).ToListAsync();
         return mapper.Map<List<BookDTO>>(books);
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<BookDTO>> GetOne(int id)
     {
-        var book = await dbContext.Libros.FirstOrDefaultAsync(x => x.Id == id);
+        var book = await dbContext.Libros
+            .Include(x => x.Comments)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (book == null)
         {
