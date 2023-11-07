@@ -6,6 +6,6 @@ public class Comment
     public string Content { get; set; }
     public int BookId { get; set; }
 
-    // this is only a 'navigation property', which allows us to easily perform JOINs. It's only used if we want.
+    // this is only a 'navigation property', which allows us to easily perform JOINs. It's only used if we want in the querys.
     public Book Book { get; set; }
 }

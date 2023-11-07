@@ -13,4 +13,7 @@ public class Author
     )]
     [UpperFirstLetter]
     public string Name { get; set; }
+
+    // 'navigation property'
+    public List<AuthorBook> AuthorsBooks { get; set; }
 }

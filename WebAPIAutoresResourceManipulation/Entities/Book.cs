@@ -14,6 +14,7 @@ public class Book
     [UpperFirstLetter]
     public string Name { get; set; }
 
-    // this is only a 'navigation property', which allows us to easily perform JOINs. It's only used if we want.
+    // this is only the 'navigation properties', which allows us to easily perform JOINs. It's only used if we want in the querys.
     public List<Comment> Comments { get; set; }
+    public List<AuthorBook> AuthorsBooks { get; set; }
 }
