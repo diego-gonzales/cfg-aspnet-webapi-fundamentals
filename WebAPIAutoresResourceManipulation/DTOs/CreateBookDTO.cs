@@ -11,4 +11,6 @@ public class CreateBookDTO
     )]
     [UpperFirstLetter]
     public string Name { get; set; }
+
+    public List<int> AuthorIds { get; set; }
 }

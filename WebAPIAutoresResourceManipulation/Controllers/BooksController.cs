@@ -42,14 +42,30 @@ public class BooksController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post(CreateBookDTO createBookDTO)
     {
-        // bool authorExists = await dbContext.Autores.AnyAsync(x => x.Id == libro.AutorId);
+        if (createBookDTO.AuthorIds == null)
+        {
+            return BadRequest("No se puede crear un libro sin autores");
+        }
 
-        // if (!authorExists)
-        // {
-        //     return BadRequest($"No existe el autor con el id {libro.AutorId}");
-        // }
+        var authorIds = await dbContext.Autores
+            .Where(a => createBookDTO.AuthorIds.Contains(a.Id))
+            .Select(x => x.Id)
+            .ToListAsync();
+
+        if (createBookDTO.AuthorIds.Count != authorIds.Count)
+        {
+            return BadRequest("Uno de los autores enviados no existe");
+        }
 
         var book = mapper.Map<Book>(createBookDTO);
+
+        if (book.AuthorsBooks != null)
+        {
+            for (int i = 0; i < book.AuthorsBooks.Count; i++)
+            {
+                book.AuthorsBooks[i].Order = i;
+            }
+        }
 
         dbContext.Add(book);
         await dbContext.SaveChangesAsync();
