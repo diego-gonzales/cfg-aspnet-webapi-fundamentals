@@ -7,8 +7,12 @@ public class AutoMapperProfiles : Profile
     public AutoMapperProfiles()
     {
         CreateMap<CreateAuthorDTO, Author>();
-        CreateMap<Author, AuthorDTO>()
-            .ForMember(authorDto => authorDto.Books, options => options.MapFrom(MapToBookDtos));
+        CreateMap<Author, AuthorDTO>();
+        CreateMap<Author, AuthorWithBooksDTO>()
+            .ForMember(
+                authorWithBooksDto => authorWithBooksDto.Books,
+                options => options.MapFrom(MapToBookDtos)
+            );
 
         CreateMap<CreateBookDTO, Book>()
             .ForMember(book => book.AuthorsBooks, options => options.MapFrom(MapToAuthorsBooks)); // (🚩🚩🌍🌍)
@@ -58,7 +62,7 @@ public class AutoMapperProfiles : Profile
         return result;
     }
 
-    private List<BookDTO> MapToBookDtos(Author author, AuthorDTO authorDTO)
+    private List<BookDTO> MapToBookDtos(Author author, AuthorWithBooksDTO authorWithBooksDTO)
     {
         var result = new List<BookDTO>();
 

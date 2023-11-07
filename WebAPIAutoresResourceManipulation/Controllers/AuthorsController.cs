@@ -25,7 +25,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<AuthorDTO>> GetOne(int id)
+    public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(int id)
     {
         var author = await dbContext.Autores
             .Include(author => author.AuthorsBooks)
@@ -37,7 +37,7 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
-        return mapper.Map<AuthorDTO>(author);
+        return mapper.Map<AuthorWithBooksDTO>(author);
     }
 
     [HttpPost]
