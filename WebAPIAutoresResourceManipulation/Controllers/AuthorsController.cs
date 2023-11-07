@@ -27,7 +27,10 @@ public class AuthorsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<AuthorDTO>> GetOne(int id)
     {
-        var author = await dbContext.Autores.FirstOrDefaultAsync(x => x.Id == id);
+        var author = await dbContext.Autores
+            .Include(author => author.AuthorsBooks)
+            .ThenInclude(authorBook => authorBook.Book)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (author == null)
         {
