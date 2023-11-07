@@ -20,12 +20,12 @@ public class BooksController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<BookDTO>>> Get()
     {
-        var books = await dbContext.Libros.Include(x => x.Comments).ToListAsync();
+        var books = await dbContext.Libros.ToListAsync();
         return mapper.Map<List<BookDTO>>(books);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<BookDTO>> GetOne(int id)
+    public async Task<ActionResult<BookWithCommentsAndAuthorsDTO>> GetOne(int id)
     {
         var book = await dbContext.Libros
             .Include(book => book.Comments)
@@ -40,7 +40,7 @@ public class BooksController : ControllerBase
 
         book.AuthorsBooks = book.AuthorsBooks.OrderBy(x => x.Order).ToList();
 
-        return mapper.Map<BookDTO>(book);
+        return mapper.Map<BookWithCommentsAndAuthorsDTO>(book);
     }
 
     [HttpPost]

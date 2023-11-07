@@ -16,8 +16,12 @@ public class AutoMapperProfiles : Profile
 
         CreateMap<CreateBookDTO, Book>()
             .ForMember(book => book.AuthorsBooks, options => options.MapFrom(MapToAuthorsBooks)); // (🚩🚩🌍🌍)
-        CreateMap<Book, BookDTO>()
-            .ForMember(bookDto => bookDto.Autores, options => options.MapFrom(MapToAuthorDtos));
+        CreateMap<Book, BookDTO>();
+        CreateMap<Book, BookWithCommentsAndAuthorsDTO>()
+            .ForMember(
+                bookWithCommentsAndAuthorsDTO => bookWithCommentsAndAuthorsDTO.Autores,
+                options => options.MapFrom(MapToAuthorDtos)
+            );
 
         CreateMap<CreateCommentDTO, Comment>();
         CreateMap<Comment, CommentDTO>();
@@ -45,7 +49,10 @@ public class AutoMapperProfiles : Profile
         return result;
     }
 
-    private List<AuthorDTO> MapToAuthorDtos(Book book, BookDTO bookDTO)
+    private List<AuthorDTO> MapToAuthorDtos(
+        Book book,
+        BookWithCommentsAndAuthorsDTO bookWithCommentsAndAuthorsDTO
+    )
     {
         var result = new List<AuthorDTO>();
 
