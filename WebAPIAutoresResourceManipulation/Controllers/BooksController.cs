@@ -28,13 +28,17 @@ public class BooksController : ControllerBase
     public async Task<ActionResult<BookDTO>> GetOne(int id)
     {
         var book = await dbContext.Libros
-            .Include(x => x.Comments)
+            .Include(book => book.Comments)
+            .Include(book => book.AuthorsBooks)
+            .ThenInclude(authorBook => authorBook.Author)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (book == null)
         {
             return NotFound();
         }
+
+        book.AuthorsBooks = book.AuthorsBooks.OrderBy(x => x.Order).ToList();
 
         return mapper.Map<BookDTO>(book);
     }

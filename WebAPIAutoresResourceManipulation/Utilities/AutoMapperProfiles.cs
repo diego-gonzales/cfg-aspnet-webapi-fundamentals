@@ -10,8 +10,9 @@ public class AutoMapperProfiles : Profile
         CreateMap<Author, AuthorDTO>();
 
         CreateMap<CreateBookDTO, Book>()
-            .ForMember(book => book.AuthorsBooks, options => options.MapFrom(MapAuthorsBooks)); // (🚩🚩🌍🌍)
-        CreateMap<Book, BookDTO>();
+            .ForMember(book => book.AuthorsBooks, options => options.MapFrom(MapToAuthorsBooks)); // (🚩🚩🌍🌍)
+        CreateMap<Book, BookDTO>()
+            .ForMember(bookDto => bookDto.Autores, options => options.MapFrom(MapToAuthorDtos));
 
         CreateMap<CreateCommentDTO, Comment>();
         CreateMap<Comment, CommentDTO>();
@@ -21,7 +22,7 @@ public class AutoMapperProfiles : Profile
         //     .ForMember(dto => dto.Poliza, ent => ent.MapFrom(prop => prop.NRO_POLIZA));
     }
 
-    private List<AuthorBook> MapAuthorsBooks(CreateBookDTO createBookDTO, Book book) // (🚩🚩🌍🌍)
+    private List<AuthorBook> MapToAuthorsBooks(CreateBookDTO createBookDTO, Book book) // (🚩🚩🌍🌍)
     {
         var result = new List<AuthorBook>();
 
@@ -38,4 +39,35 @@ public class AutoMapperProfiles : Profile
 
         return result;
     }
+
+    private List<AuthorDTO> MapToAuthorDtos(Book book, BookDTO bookDTO)
+    {
+        var result = new List<AuthorDTO>();
+
+        if (book.AuthorsBooks == null)
+        {
+            return result;
+        }
+
+        foreach (var authorBook in book.AuthorsBooks)
+        {
+            result.Add(new AuthorDTO() { Id = authorBook.AuthorId, Name = authorBook.Author.Name });
+        }
+
+        return result;
+    }
 }
+
+/*
+    CreateMap<CreateBookDTO, Book>()
+        .ForMember(book => book.AuthorsBooks, options => options.MapFrom(MapAuthorsBooks));
+
+    // aquí hacemos esto debido a que la entidad 'Book' tenemos entre sus propiedades: 'public List<AuthorBook> AuthorsBooks { get; set; }'; y como la entidad 'CreateBookDto' trae un arreglo de ids de autores: 'public List<int> AuthorIds { get; set; }'; entonces tenemos que hacer esa tranformación y lo hacemo dentro del método 'MapToAuthorsBooks()' el cual va a devolver ese 'List<AuthorBook>'
+*/
+
+/*
+    CreateMap<Book, BookDTO>()
+        .ForMember(bookDto => bookDto.Autores, options => options.MapFrom(MapToAuthorDtos));
+
+    // aquí hacemos esto debido a que la entidad 'BookDTO' tenemos entre sus propiedades: 'public List<AuthorDTO> Autores { get; set; }'; y como la entidad 'Book' tiene una lista de authors-books 'public List<AuthorBook> AuthorsBooks { get; set; }'; entonces tenemos que hacer esa tranformación y lo hacemo dentro del método 'MapToAuthorDtos()' el cual va a devolver ese 'List<AuthorDTO>'
+*/

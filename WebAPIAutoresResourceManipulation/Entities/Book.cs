@@ -17,6 +17,6 @@ public class Book
     // this is only the 'navigation properties', which allows us to easily perform JOINs. It's only used if we want in the querys.
     public List<Comment> Comments { get; set; }
 
-    // al recibir en mi CreateBookDTO un listado de IDs de autores entonces en mi 'AutoMapperProfiles' debo tomar en cuenta esta propiedad  y transformar esos IDs de autores en una lista de 'AuthorsBooks' (🚩🚩🌍🌍).
+    // al recibir en mi CreateBookDTO un listado de IDs de autores entonces en mi 'AutoMapperProfiles' debo tomar en cuenta esta propiedad y mapear esos IDs de autores en una lista de 'AuthorsBooks' (🚩🚩🌍🌍).
     public List<AuthorBook> AuthorsBooks { get; set; }
 }
