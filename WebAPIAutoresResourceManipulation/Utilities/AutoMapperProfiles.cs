@@ -95,8 +95,11 @@ public class AutoMapperProfiles : Profile
 */
 
 /*
-    CreateMap<Book, BookDTO>()
-        .ForMember(bookDto => bookDto.Autores, options => options.MapFrom(MapToAuthorDtos));
+    CreateMap<Book, BookWithCommentsAndAuthorsDTO>()
+            .ForMember(
+                bookWithCommentsAndAuthorsDTO => bookWithCommentsAndAuthorsDTO.Autores,
+                options => options.MapFrom(MapToAuthorDtos)
+            );
 
-    // aquí hacemos esto debido a que la entidad 'BookDTO' tenemos entre sus propiedades: 'public List<AuthorDTO> Autores { get; set; }'; y como la entidad 'Book' tiene una lista de authors-books 'public List<AuthorBook> AuthorsBooks { get; set; }'; entonces tenemos que hacer esa tranformación y lo hacemo dentro del método 'MapToAuthorDtos()' el cual va a devolver ese 'List<AuthorDTO>'
+    // aquí hacemos esto debido a que la entidad 'BookWithCommentsAndAuthorsDTO' tenemos entre sus propiedades: 'public List<AuthorDTO> Autores { get; set; }'; y como la entidad 'Book' tiene una propiedad 'public List<AuthorBook> AuthorsBooks { get; set; }'; entonces tenemos que hacer esa tranformación y lo hacemo dentro del método 'MapToAuthorDtos()' el cual va a devolver ese 'List<AuthorDTO>'
 */
