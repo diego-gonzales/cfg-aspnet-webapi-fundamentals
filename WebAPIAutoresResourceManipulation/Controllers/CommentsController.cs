@@ -107,4 +107,20 @@ public class CommentsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpDelete("/api/comments/{id:int}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var comment = await dbContext.Comments.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (comment == null)
+        {
+            return NotFound();
+        }
+
+        dbContext.Remove(comment);
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
 }
