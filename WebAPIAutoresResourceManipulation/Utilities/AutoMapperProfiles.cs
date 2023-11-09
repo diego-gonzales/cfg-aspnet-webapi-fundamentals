@@ -7,6 +7,7 @@ public class AutoMapperProfiles : Profile
     public AutoMapperProfiles()
     {
         CreateMap<CreateAuthorDTO, Author>();
+        CreateMap<UpdateAuthorDTO, Author>();
         CreateMap<Author, AuthorDTO>();
         CreateMap<Author, AuthorWithBooksDTO>()
             .ForMember(
