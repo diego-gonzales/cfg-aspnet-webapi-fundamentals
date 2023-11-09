@@ -32,16 +32,18 @@ public class CommentsController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "getComment")]
-    public async Task<ActionResult<CommentDTO>> GetOne(int id)
+    public async Task<ActionResult<CommentWithBookDTO>> GetOne(int id)
     {
-        var comment = await dbContext.Comments.FirstOrDefaultAsync(x => x.Id == id);
+        var comment = await dbContext.Comments
+            .Include(x => x.Book)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (comment == null)
         {
             return NotFound();
         }
 
-        return mapper.Map<CommentDTO>(comment);
+        return mapper.Map<CommentWithBookDTO>(comment);
     }
 
     [HttpPost]

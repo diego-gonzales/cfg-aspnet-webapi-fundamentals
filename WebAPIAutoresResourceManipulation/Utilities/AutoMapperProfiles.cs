@@ -25,6 +25,7 @@ public class AutoMapperProfiles : Profile
 
         CreateMap<CreateCommentDTO, Comment>();
         CreateMap<Comment, CommentDTO>();
+        CreateMap<Comment, CommentWithBookDTO>();
 
         // El siguiente código es solo en caso tengan nombres distintos en las propiedades, por ejemplo:
         // CreateMap<Autor, CreateAuthorDTO>()
