@@ -31,6 +31,19 @@ public class CommentsController : ControllerBase
         return mapper.Map<List<CommentDTO>>(comments);
     }
 
+    [HttpGet("{id:int}", Name = "getComment")]
+    public async Task<ActionResult<CommentDTO>> GetOne(int id)
+    {
+        var comment = await dbContext.Comments.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (comment == null)
+        {
+            return NotFound();
+        }
+
+        return mapper.Map<CommentDTO>(comment);
+    }
+
     [HttpPost]
     public async Task<ActionResult> Post(int bookId, CreateCommentDTO createCommentDTO)
     {
@@ -47,6 +60,9 @@ public class CommentsController : ControllerBase
         dbContext.Add(comment);
         await dbContext.SaveChangesAsync();
 
-        return Ok();
+        var commentDto = mapper.Map<CommentDTO>(comment);
+
+        // en este caso el routeValues tiene dos valores: el bookId (del atributo Route) y el id (del atributo HttpGet)
+        return CreatedAtRoute("getComment", new { bookId = bookId, id = comment.Id }, commentDto);
     }
 }
