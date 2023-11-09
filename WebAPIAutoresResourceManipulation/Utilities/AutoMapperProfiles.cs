@@ -25,6 +25,7 @@ public class AutoMapperProfiles : Profile
             );
 
         CreateMap<CreateCommentDTO, Comment>();
+        CreateMap<UpdateCommentDTO, Comment>();
         CreateMap<Comment, CommentDTO>();
         CreateMap<Comment, CommentWithBookDTO>();
 
