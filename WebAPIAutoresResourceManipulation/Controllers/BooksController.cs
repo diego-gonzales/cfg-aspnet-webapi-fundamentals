@@ -24,7 +24,7 @@ public class BooksController : ControllerBase
         return mapper.Map<List<BookDTO>>(books);
     }
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}", Name = "getBook")]
     public async Task<ActionResult<BookWithCommentsAndAuthorsDTO>> GetOne(int id)
     {
         var book = await dbContext.Libros
@@ -73,6 +73,10 @@ public class BooksController : ControllerBase
 
         dbContext.Add(book);
         await dbContext.SaveChangesAsync();
-        return Ok();
+
+        var bookDto = mapper.Map<BookDTO>(book);
+
+        // params: routeName, routeValue (anonymous object), value
+        return CreatedAtRoute("getBook", new { id = book.Id }, bookDto);
     }
 }
