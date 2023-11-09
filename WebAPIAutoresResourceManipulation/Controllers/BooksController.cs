@@ -63,13 +63,7 @@ public class BooksController : ControllerBase
 
         var book = mapper.Map<Book>(createBookDTO);
 
-        if (book.AuthorsBooks != null)
-        {
-            for (int i = 0; i < book.AuthorsBooks.Count; i++)
-            {
-                book.AuthorsBooks[i].Order = i;
-            }
-        }
+        AssignOrderToAuthors(book);
 
         dbContext.Add(book);
         await dbContext.SaveChangesAsync();
@@ -78,5 +72,39 @@ public class BooksController : ControllerBase
 
         // params: routeName, routeValue (anonymous object), value
         return CreatedAtRoute("getBook", new { id = book.Id }, bookDto);
+    }
+
+    /* Esta es otra forma de hacer una actualización. Se hizo de esta manera porque así se mantiene la misma instancia de bookFromDB, lo que permite lograr que EF Core haga la actualización de los campos cuando hacemos SaveChangesAsync. Es básicamente un truco que muestra Felipe Gávilan para actualizar una entidad y sus entidades relacionadas de una manera rápida. */
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Put(int id, CreateBookDTO createBookDTO)
+    {
+        var bookFromDB = await dbContext.Libros
+            .Include(x => x.AuthorsBooks)
+            .FirstOrDefaultAsync(x => x.Id == id);
+
+        if (bookFromDB == null)
+        {
+            return NotFound();
+        }
+
+        // está parte se explica aquí: https://www.udemy.com/course/construyendo-web-apis-restful-con-aspnet-core/learn/lecture/26946934#questions/19495216, en el minuto 3:00, donde básicamente comenta que usamos la misma instancia de bookFromDB que se encuentra en memoria para actualizar la data.
+        bookFromDB = mapper.Map(createBookDTO, bookFromDB);
+
+        AssignOrderToAuthors(bookFromDB);
+
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    private void AssignOrderToAuthors(Book book)
+    {
+        if (book.AuthorsBooks != null)
+        {
+            for (int i = 0; i < book.AuthorsBooks.Count; i++)
+            {
+                book.AuthorsBooks[i].Order = i;
+            }
+        }
     }
 }
