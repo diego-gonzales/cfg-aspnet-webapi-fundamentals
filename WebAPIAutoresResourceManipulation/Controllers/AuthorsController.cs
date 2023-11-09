@@ -92,9 +92,10 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
+        // El 'Remove()' necesita la entidad que quiero borrar, es por eso que creamos una instancia con el Id del autor.
         dbContext.Remove(new Author { Id = id });
         await dbContext.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
 
     [HttpGet("{name}")]

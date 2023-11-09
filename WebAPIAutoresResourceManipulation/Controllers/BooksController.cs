@@ -132,6 +132,22 @@ public class BooksController : ControllerBase
         return NoContent();
     }
 
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var book = await dbContext.Libros.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (book == null)
+        {
+            return NotFound();
+        }
+
+        dbContext.Remove(book); // otra forma de borrar, sin hacer esto: dbContext.Remove(new Book { Id = id });
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     private void AssignOrderToAuthors(Book book)
     {
         if (book.AuthorsBooks != null)
