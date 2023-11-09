@@ -2,7 +2,7 @@
 
 namespace WebAPIAutoresResourceManipulation;
 
-public class CreateBookDTO
+public class UpdateBookDTO
 {
     [Required]
     [StringLength(
