@@ -21,7 +21,8 @@ public class Startup
             .AddJsonOptions(
                 options =>
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
-            );
+            )
+            .AddNewtonsoftJson(); // here is configured 'NewtonsofJson'
         services.AddDbContext<ApplicationDbContext>(
             options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
         );

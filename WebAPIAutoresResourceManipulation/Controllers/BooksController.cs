@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Azure;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -90,6 +92,40 @@ public class BooksController : ControllerBase
         bookFromDB = mapper.Map(createBookDTO, bookFromDB);
 
         AssignOrderToAuthors(bookFromDB);
+
+        await dbContext.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id:int}")]
+    // aquí necesito el JSON patch document, asi que debo instalarla la librería 'NewtonsoftJson' y luego configurarla en mi clase 'Startup'
+    public async Task<ActionResult> Patch(int id, JsonPatchDocument<PatchBookDTO> jsonPatchDocument)
+    {
+        if (jsonPatchDocument == null)
+        {
+            return BadRequest();
+        }
+
+        var bookFromDB = await dbContext.Libros.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (bookFromDB == null)
+        {
+            return NotFound();
+        }
+
+        var patchBookDto = mapper.Map<PatchBookDTO>(bookFromDB);
+
+        jsonPatchDocument.ApplyTo(patchBookDto, ModelState); // ModelState es un diccionario que tiene los errores de validación
+
+        var isValid = TryValidateModel(patchBookDto); // esto valida el modelo y lo agrega al ModelState
+
+        if (!isValid)
+        {
+            return BadRequest(ModelState); // si el modelo no es válido, devolvemos el ModelState
+        }
+
+        mapper.Map(patchBookDto, bookFromDB); // es lo mismo que: bookFromDB = mapper.Map(patchBookDto, bookFromDB);
 
         await dbContext.SaveChangesAsync();
 

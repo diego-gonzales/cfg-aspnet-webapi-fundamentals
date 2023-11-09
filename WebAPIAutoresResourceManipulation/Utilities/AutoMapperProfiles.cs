@@ -23,6 +23,7 @@ public class AutoMapperProfiles : Profile
                 bookWithCommentsAndAuthorsDTO => bookWithCommentsAndAuthorsDTO.Autores,
                 options => options.MapFrom(MapToAuthorDtos)
             );
+        CreateMap<PatchBookDTO, Book>().ReverseMap();
 
         CreateMap<CreateCommentDTO, Comment>();
         CreateMap<UpdateCommentDTO, Comment>();
