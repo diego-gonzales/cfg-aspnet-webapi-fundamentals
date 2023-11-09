@@ -46,19 +46,11 @@ public class BooksController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post(CreateBookDTO createBookDTO)
     {
-        if (createBookDTO.AuthorIds == null)
-        {
-            return BadRequest("No se puede crear un libro sin autores");
-        }
+        var validationResult = await ValidateAuthors(createBookDTO);
 
-        var authorIds = await dbContext.Autores
-            .Where(a => createBookDTO.AuthorIds.Contains(a.Id))
-            .Select(x => x.Id)
-            .ToListAsync();
-
-        if (createBookDTO.AuthorIds.Count != authorIds.Count)
+        if (validationResult != null)
         {
-            return BadRequest("Uno de los autores enviados no existe");
+            return validationResult;
         }
 
         var book = mapper.Map<Book>(createBookDTO);
@@ -78,6 +70,13 @@ public class BooksController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Put(int id, CreateBookDTO createBookDTO)
     {
+        var validationResult = await ValidateAuthors(createBookDTO);
+
+        if (validationResult != null)
+        {
+            return validationResult;
+        }
+
         var bookFromDB = await dbContext.Libros
             .Include(x => x.AuthorsBooks)
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -106,5 +105,25 @@ public class BooksController : ControllerBase
                 book.AuthorsBooks[i].Order = i;
             }
         }
+    }
+
+    private async Task<ActionResult> ValidateAuthors(CreateBookDTO createBookDTO)
+    {
+        if (createBookDTO.AuthorIds == null)
+        {
+            return BadRequest("No se puede crear un libro sin autores");
+        }
+
+        var authorIds = await dbContext.Autores
+            .Where(a => createBookDTO.AuthorIds.Contains(a.Id))
+            .Select(x => x.Id)
+            .ToListAsync();
+
+        if (createBookDTO.AuthorIds.Count != authorIds.Count)
+        {
+            return BadRequest("Uno de los autores enviados no existe");
+        }
+
+        return null;
     }
 }
