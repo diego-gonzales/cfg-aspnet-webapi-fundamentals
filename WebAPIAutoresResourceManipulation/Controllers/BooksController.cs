@@ -145,6 +145,7 @@ public class BooksController : ControllerBase
 
     private async Task<ActionResult> ValidateAuthors(CreateBookDTO createBookDTO)
     {
+        // 👀👀👀 we can avoid this validation putting [Required] attribute in the 'CreateBookDTO'
         if (createBookDTO.AuthorIds == null)
         {
             return BadRequest("No se puede crear un libro sin autores");
