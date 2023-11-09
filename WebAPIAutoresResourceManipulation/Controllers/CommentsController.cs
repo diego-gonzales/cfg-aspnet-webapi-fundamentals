@@ -67,7 +67,8 @@ public class CommentsController : ControllerBase
         var commentDto = mapper.Map<CommentDTO>(comment);
 
         // en este caso el routeValues tiene dos valores: el bookId (del atributo Route) y el id (del atributo HttpGet)
-        return CreatedAtRoute("getComment", new { bookId = bookId, id = comment.Id }, commentDto);
+        // return CreatedAtRoute("getComment", new { bookId = bookId, id = comment.Id }, commentDto);
+        return CreatedAtRoute("getComment", new { id = comment.Id }, commentDto);
     }
 
     [HttpPut("{id:int}")]
