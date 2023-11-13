@@ -121,11 +121,13 @@ public class AuthorsController : ControllerBase
 
         // getting from 'lauchSettings.json' configuration provider
         string myEnvironmentVariables = configuration["MY_LASTNAME"];
+        string myUserSecrets = configuration["MyTestSecret"];
 
         return new
         {
             my_configuracion = myConfiguration,
-            my_env_variables = myEnvironmentVariables
+            my_env_variables = myEnvironmentVariables,
+            my_user_secrets = myUserSecrets,
         };
     }
 }
