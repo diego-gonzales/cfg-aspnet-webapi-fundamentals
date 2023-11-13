@@ -10,11 +10,17 @@ public class AuthorsController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
     private readonly IMapper mapper;
+    private readonly IConfiguration configuration;
 
-    public AuthorsController(ApplicationDbContext dbContext, IMapper mapper)
+    public AuthorsController(
+        ApplicationDbContext dbContext,
+        IMapper mapper,
+        IConfiguration configuration
+    )
     {
         this.dbContext = dbContext;
         this.mapper = mapper;
+        this.configuration = configuration;
     }
 
     [HttpGet]
@@ -104,5 +110,13 @@ public class AuthorsController : ControllerBase
         // 'Where' is part of LINQ
         var authors = await dbContext.Autores.Where(x => x.Name.Contains(name)).ToListAsync();
         return mapper.Map<List<AuthorDTO>>(authors);
+    }
+
+    [HttpGet("configurations")]
+    public ActionResult<string> GetConfigurations()
+    {
+        string myConfiguration =
+            $"Developer User: {configuration["DeveloperUser"]} \nDefault Connection: {configuration["ConnectionStrings:DefaultConnection"]}";
+        return myConfiguration;
     }
 }
