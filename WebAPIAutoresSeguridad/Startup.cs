@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPIAutoresSeguridad;
@@ -27,6 +29,14 @@ public class Startup
             options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection"))
         );
         services.AddAutoMapper(typeof(Startup));
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+
+        // Configuración de Identity
+        services
+            .AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -39,6 +49,10 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
