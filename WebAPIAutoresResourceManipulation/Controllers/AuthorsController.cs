@@ -113,10 +113,19 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpGet("configurations")]
-    public ActionResult<string> GetConfigurations()
+    public ActionResult<object> GetConfigurations()
     {
+        // getting from 'appsettings.Development.json' configuration provider
         string myConfiguration =
             $"Developer User: {configuration["DeveloperUser"]} \nDefault Connection: {configuration["ConnectionStrings:DefaultConnection"]}";
-        return myConfiguration;
+
+        // getting from 'lauchSettings.json' configuration provider
+        string myEnvironmentVariables = configuration["MY_LASTNAME"];
+
+        return new
+        {
+            my_configuracion = myConfiguration,
+            my_env_variables = myEnvironmentVariables
+        };
     }
 }
