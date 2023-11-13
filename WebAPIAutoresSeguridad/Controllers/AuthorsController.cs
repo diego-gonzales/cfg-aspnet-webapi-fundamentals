@@ -111,21 +111,4 @@ public class AuthorsController : ControllerBase
         var authors = await dbContext.Autores.Where(x => x.Name.Contains(name)).ToListAsync();
         return mapper.Map<List<AuthorDTO>>(authors);
     }
-
-    [HttpGet("configurations")]
-    public ActionResult<object> GetConfigurations()
-    {
-        string myConfiguration =
-            $"Developer User: {configuration["DeveloperUser"]} \nDefault Connection: {configuration["ConnectionStrings:DefaultConnection"]}";
-
-        string myEnvironmentVariables = configuration["MY_LASTNAME"];
-        string myUserSecrets = configuration["MyTestSecret"];
-
-        return new
-        {
-            my_configuracion = myConfiguration,
-            my_env_variables = myEnvironmentVariables,
-            my_user_secrets = myUserSecrets,
-        };
-    }
 }
