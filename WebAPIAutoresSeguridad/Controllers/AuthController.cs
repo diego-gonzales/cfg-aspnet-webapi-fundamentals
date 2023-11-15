@@ -15,7 +15,7 @@ public class AuthController : ControllerBase
     private readonly SignInManager<IdentityUser> signInManager;
     private readonly IConfiguration configuration;
 
-    // UserManager es un servicio que nos permite administrar los usuarios. Debemos pasarle una clase que identifica a un usuario en nuestra app, en nuestro caso estamos usando la clase por defecto 'IdentityUser'.
+    // UserManager es un servicio que nos permite administrar los usuarios. Debemos pasarle una clase que identifica a un usuario en nuestra app, en nuestro caso la clase por defecto 'IdentityUser' representa un usuario.
     public AuthController(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
