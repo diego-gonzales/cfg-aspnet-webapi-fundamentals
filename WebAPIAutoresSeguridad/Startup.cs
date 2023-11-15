@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebAPIAutoresSeguridad;
 
@@ -30,7 +32,23 @@ public class Startup
         );
         services.AddAutoMapper(typeof(Startup));
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            // Realizamos las configuraciones para hacer que se valide de manera correcta nuestro JWT, aquí le indicamos que firma tiene que usar para validar el token, si tiene que validar el tiempo de vida del token, entre otras cosas.
+            .AddJwtBearer(
+                options =>
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["JWTSecret"])
+                        ),
+                        ClockSkew = TimeSpan.Zero
+                    }
+            );
 
         // Configuración de Identity
         services
