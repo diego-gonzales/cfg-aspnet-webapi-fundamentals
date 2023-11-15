@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,8 @@ public class Startup
 {
     public Startup(IConfiguration configuration)
     {
+        // Con la siguiente línea estoy limpiando ese mapeo que se hace en automático en el tipo de un clain, Por ejemplo en: new Claim("email", loginDTO.Email), allí cambia el tipo (o nombre) "email" a un nombre extraño, y eso no queremos.
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         Configuration = configuration;
     }
 

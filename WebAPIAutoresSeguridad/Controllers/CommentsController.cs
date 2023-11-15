@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +13,17 @@ public class CommentsController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
     private readonly IMapper mapper;
+    private readonly UserManager<IdentityUser> userManager;
 
-    public CommentsController(ApplicationDbContext dbContext, IMapper mapper)
+    public CommentsController(
+        ApplicationDbContext dbContext,
+        IMapper mapper,
+        UserManager<IdentityUser> userManager
+    )
     {
         this.dbContext = dbContext;
         this.mapper = mapper;
+        this.userManager = userManager;
     }
 
     [HttpGet]
@@ -47,8 +56,17 @@ public class CommentsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> Post(int bookId, CreateCommentDTO createCommentDTO)
     {
+        // Este "email" es el claim que se agrega en el método GenerateToken(), lo obtengo de esta manera porque en el Startup.cs hice la siguiente configuración: JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(), de lo contrario tendría que hacerlo de esta manera: var email = HttpContext.User.Claims.Where(claim => claim.Type == ClaimTypes.Email).FirstOrDefault();. Ambas son válidas.
+        var emailClaim = HttpContext.User.Claims
+            .Where(claim => claim.Type == "email")
+            .FirstOrDefault();
+        var email = emailClaim.Value;
+        var user = await userManager.FindByEmailAsync(email);
+        var userId = user.Id;
+
         var bookExists = await dbContext.Libros.AnyAsync(x => x.Id == bookId);
 
         if (!bookExists)
@@ -58,6 +76,7 @@ public class CommentsController : ControllerBase
 
         var comment = mapper.Map<Comment>(createCommentDTO);
         comment.BookId = bookId;
+        comment.UserId = userId;
 
         dbContext.Add(comment);
         await dbContext.SaveChangesAsync();

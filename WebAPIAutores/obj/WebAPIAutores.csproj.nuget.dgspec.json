@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj": {}
+    "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj": {}
   },
   "projects": {
-    "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj": {
+    "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj",
+        "projectUniqueName": "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj",
         "projectName": "WebAPIAutores",
-        "projectPath": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj",
+        "projectPath": "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj",
         "packagesPath": "C:\\Users\\DIEGO\\.nuget\\packages\\",
-        "outputPath": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\obj\\",
+        "outputPath": "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DIEGO\\AppData\\Roaming\\NuGet\\NuGet.Config",
