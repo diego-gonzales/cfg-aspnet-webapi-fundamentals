@@ -1,6 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +37,7 @@ public class AuthController : ControllerBase
 
         if (result.Succeeded)
         {
-            return GetToken(registerDTO);
+            return await GetToken(registerDTO);
         }
 
         return BadRequest(result.Errors);
@@ -53,25 +55,44 @@ public class AuthController : ControllerBase
 
         if (result.Succeeded)
         {
-            return GetToken(loginDTO);
+            return await GetToken(loginDTO);
         }
 
         return BadRequest("Login incorrecto. Credenciales son incorrectas");
     }
 
     [HttpGet("refresh-token")]
-    public ActionResult<AuthResponseDTO> Refresh()
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<AuthResponseDTO>> Refresh()
     {
         var emailClaim = HttpContext.User.Claims
-            .Where(claim => claim.Type == ClaimTypes.Email)
+            .Where(claim => claim.Type == "email")
             .FirstOrDefault();
         var email = emailClaim.Value;
 
         var loginDto = new LoginDTO() { Email = email };
-        return GetToken(loginDto);
+        return await GetToken(loginDto);
     }
 
-    private AuthResponseDTO GetToken(LoginDTO loginDTO)
+    [HttpPost("become-admin")]
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+    public async Task<ActionResult> BecomeAdmin(BecomeAdminDTO becomeAdminDTO)
+    {
+        var user = await userManager.FindByEmailAsync(becomeAdminDTO.Email);
+        await userManager.AddClaimAsync(user, new Claim("isAdmin", true.ToString()));
+        return NoContent();
+    }
+
+    [HttpPost("remove-admin")]
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
+    public async Task<ActionResult> RemoveAdmin(BecomeAdminDTO becomeAdminDTO)
+    {
+        var user = await userManager.FindByEmailAsync(becomeAdminDTO.Email);
+        await userManager.RemoveClaimAsync(user, new Claim("isAdmin", true.ToString()));
+        return NoContent();
+    }
+
+    private async Task<AuthResponseDTO> GetToken(LoginDTO loginDTO)
     {
         // Un Claim es información confiable acerca del usuario que se va a añadir en el token. En este caso, el Claim que vamos a guardar es el email del usuario. Se podría decir que es el payload del token.
         var claims = new List<Claim>()
@@ -79,6 +100,12 @@ public class AuthController : ControllerBase
             new Claim("email", loginDTO.Email),
             new Claim("lo que yo quiera", "cualquier valor")
         };
+
+        var user = await userManager.FindByEmailAsync(loginDTO.Email);
+        var claimsDB = await userManager.GetClaimsAsync(user);
+        // Unimos los claims que vienen de la base de datos (en este caso, el claim 'isAdmin') con los claims que nosotros definimos ('email' y 'lo que yo quiera').
+        claims.AddRange(claimsDB);
+
         var jwtSecret = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(configuration["JWTSecret"])
         );

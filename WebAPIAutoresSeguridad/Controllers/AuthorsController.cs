@@ -51,6 +51,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Post(CreateAuthorDTO createAuthorDTO)
     {
         var autorAlreadyExists = await dbContext.Autores.AnyAsync(
@@ -73,6 +74,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Put(int id, UpdateAuthorDTO updateAuthorDTO)
     {
         var autorExists = await dbContext.Autores.AnyAsync(x => x.Id == id);
@@ -92,6 +94,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Delete(int id)
     {
         var autorExists = await dbContext.Autores.AnyAsync(x => x.Id == id);

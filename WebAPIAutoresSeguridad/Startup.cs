@@ -95,6 +95,12 @@ public class Startup
             .AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+        // Configuración del servicio de authorization para que pueda validar el claim "isAdmin"
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("IsAdmin", policy => policy.RequireClaim("isAdmin"));
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
