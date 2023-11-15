@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,17 +17,20 @@ public class AuthController : ControllerBase
     private readonly UserManager<IdentityUser> userManager;
     private readonly SignInManager<IdentityUser> signInManager;
     private readonly IConfiguration configuration;
+    private readonly IDataProtector dataProtector;
 
-    // UserManager es un servicio que nos permite administrar los usuarios. Debemos pasarle una clase que identifica a un usuario en nuestra app, en nuestro caso la clase por defecto 'IdentityUser' representa un usuario.
+    // 'UserManager' es un servicio que nos permite administrar los usuarios. Debemos pasarle una clase que identifica a un usuario en nuestra app, en nuestro caso la clase por defecto 'IdentityUser' representa un usuario.
     public AuthController(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
-        IConfiguration configuration
+        IConfiguration configuration,
+        IDataProtectionProvider dataProtectionProvider // servicio para realizar la encriptación de datos
     )
     {
         this.userManager = userManager;
         this.signInManager = signInManager;
         this.configuration = configuration;
+        dataProtector = dataProtectionProvider.CreateProtector("unique_value_and_secret");
     }
 
     [HttpPost("register")]
@@ -90,6 +94,46 @@ public class AuthController : ControllerBase
         var user = await userManager.FindByEmailAsync(becomeAdminDTO.Email);
         await userManager.RemoveClaimAsync(user, new Claim("isAdmin", true.ToString()));
         return NoContent();
+    }
+
+    [HttpGet("encrypt-test")]
+    public ActionResult EncryptTest()
+    {
+        var text = "Hola mundo";
+        var encryptedText = dataProtector.Protect(text);
+        var decryptedText = dataProtector.Unprotect(encryptedText);
+        return Ok(
+            new
+            {
+                text,
+                encryptedText,
+                decryptedText
+            }
+        );
+    }
+
+    [HttpGet("encrypt-test-by-lifetime")]
+    public ActionResult EncryptTestByLifetime()
+    {
+        var dataProtectorByLifetime = dataProtector.ToTimeLimitedDataProtector();
+        var text = "Hola mundo";
+        var encryptedText = dataProtectorByLifetime.Protect(
+            text,
+            lifetime: TimeSpan.FromSeconds(5)
+        );
+
+        // aquí simulamos que pasan 6 segundos para que ya no podamos desencriptar el texto
+        Thread.Sleep(6000);
+
+        var decryptedText = dataProtectorByLifetime.Unprotect(encryptedText);
+        return Ok(
+            new
+            {
+                text,
+                encryptedText,
+                decryptedText
+            }
+        );
     }
 
     private async Task<AuthResponseDTO> GetToken(LoginDTO loginDTO)

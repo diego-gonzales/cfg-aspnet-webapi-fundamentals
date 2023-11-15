@@ -111,6 +111,8 @@ public class Startup
                 // .WithExposedHeaders(); // Para exponer los headers que queramos que se puedan ver desde el cliente
             });
         });
+
+        services.AddDataProtection();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
