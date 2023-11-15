@@ -101,6 +101,16 @@ public class Startup
         {
             options.AddPolicy("IsAdmin", policy => policy.RequireClaim("isAdmin"));
         });
+
+        // Configuración de CORS
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(builder =>
+            {
+                builder.WithOrigins("").AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader();
+                // .WithExposedHeaders(); // Para exponer los headers que queramos que se puedan ver desde el cliente
+            });
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -113,6 +123,8 @@ public class Startup
 
         app.UseHttpsRedirection();
         app.UseRouting();
+
+        app.UseCors();
 
         app.UseAuthentication();
         app.UseAuthorization();
