@@ -18,18 +18,21 @@ public class AuthController : ControllerBase
     private readonly SignInManager<IdentityUser> signInManager;
     private readonly IConfiguration configuration;
     private readonly IDataProtector dataProtector;
+    private readonly HashService hashService;
 
     // 'UserManager' es un servicio que nos permite administrar los usuarios. Debemos pasarle una clase que identifica a un usuario en nuestra app, en nuestro caso la clase por defecto 'IdentityUser' representa un usuario.
     public AuthController(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
         IConfiguration configuration,
-        IDataProtectionProvider dataProtectionProvider // servicio para realizar la encriptación de datos
+        IDataProtectionProvider dataProtectionProvider, // servicio para realizar la encriptación de datos
+        HashService hashService
     )
     {
         this.userManager = userManager;
         this.signInManager = signInManager;
         this.configuration = configuration;
+        this.hashService = hashService;
         dataProtector = dataProtectionProvider.CreateProtector("unique_value_and_secret");
     }
 
@@ -132,6 +135,22 @@ public class AuthController : ControllerBase
                 text,
                 encryptedText,
                 decryptedText
+            }
+        );
+    }
+
+    [HttpGet("hash/{text}")]
+    public ActionResult HashText(string text)
+    {
+        var result1 = hashService.Hash(text);
+        var result2 = hashService.Hash(text);
+
+        return Ok(
+            new
+            {
+                plainText = text,
+                hash1 = result1,
+                hash2 = result2
             }
         );
     }

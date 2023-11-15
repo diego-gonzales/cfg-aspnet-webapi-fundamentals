@@ -112,7 +112,11 @@ public class Startup
             });
         });
 
+        // servicio para realizar encriptación de datos
         services.AddDataProtection();
+
+        // servicio personalizado para hashear passwords
+        services.AddTransient<HashService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
