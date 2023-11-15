@@ -8,6 +8,7 @@ namespace WebAPIAutoresSeguridad;
 
 [ApiController]
 [Route("api/authors")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class AuthorsController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
@@ -26,7 +27,7 @@ public class AuthorsController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
     public async Task<ActionResult<List<AuthorDTO>>> Get()
     {
         var authors = await dbContext.Autores.ToListAsync();
