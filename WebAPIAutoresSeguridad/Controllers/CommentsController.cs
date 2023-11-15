@@ -56,6 +56,7 @@ public class CommentsController : ControllerBase
         return mapper.Map<CommentWithBookDTO>(comment);
     }
 
+    // NOTA: Si por ejemplo queremos permitir que usuarios anónimos escriban comentarios, podríamos colocar el [Authorize] a nivel de controlador, y aquí en el método 'Post' podríamos colocar el [AllowAnonymous] (es decir que no va a requerir autenticación: JWT), y hacer una validación, ya que el 'emailClaim' sería null si es que escribe usuario anónimo, de tal manera que solo agregaríamos el 'userId' si es diferente de null.
     [HttpPost]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> Post(int bookId, CreateCommentDTO createCommentDTO)
