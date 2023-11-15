@@ -59,6 +59,18 @@ public class AuthController : ControllerBase
         return BadRequest("Login incorrecto. Credenciales son incorrectas");
     }
 
+    [HttpGet("refresh-token")]
+    public ActionResult<AuthResponseDTO> Refresh()
+    {
+        var emailClaim = HttpContext.User.Claims
+            .Where(claim => claim.Type == ClaimTypes.Email)
+            .FirstOrDefault();
+        var email = emailClaim.Value;
+
+        var loginDto = new LoginDTO() { Email = email };
+        return GetToken(loginDto);
+    }
+
     private AuthResponseDTO GetToken(LoginDTO loginDTO)
     {
         // Un Claim es información confiable acerca del usuario que se va a añadir en el token. En este caso, el Claim que vamos a guardar es el email del usuario. Se podría decir que es el payload del token.
