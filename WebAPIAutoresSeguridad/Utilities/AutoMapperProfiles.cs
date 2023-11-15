@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebAPIAutoresSeguridad;
 
@@ -29,6 +30,8 @@ public class AutoMapperProfiles : Profile
         CreateMap<UpdateCommentDTO, Comment>();
         CreateMap<Comment, CommentDTO>();
         CreateMap<Comment, CommentWithBookDTO>();
+
+        CreateMap<IdentityUser, IdentityUserDTO>();
     }
 
     private List<AuthorBook> MapToAuthorsBooks(CreateBookDTO createBookDTO, Book book)

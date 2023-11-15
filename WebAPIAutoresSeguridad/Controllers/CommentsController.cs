@@ -45,6 +45,7 @@ public class CommentsController : ControllerBase
     {
         var comment = await dbContext.Comments
             .Include(x => x.Book)
+            .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (comment == null)
