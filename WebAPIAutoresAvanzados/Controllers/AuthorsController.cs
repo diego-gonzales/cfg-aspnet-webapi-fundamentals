@@ -47,7 +47,11 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
-        return mapper.Map<AuthorWithBooksDTO>(author);
+        var authorWithBooksDTO = mapper.Map<AuthorWithBooksDTO>(author);
+
+        GenerateLinks(authorWithBooksDTO);
+
+        return authorWithBooksDTO;
     }
 
     [HttpPost(Name = "createAuthor")]
@@ -114,5 +118,32 @@ public class AuthorsController : ControllerBase
     {
         var authors = await dbContext.Autores.Where(x => x.Name.Contains(name)).ToListAsync();
         return mapper.Map<List<AuthorDTO>>(authors);
+    }
+
+    private void GenerateLinks(AuthorDTO authorDTO)
+    {
+        authorDTO.Links.Add(
+            new HATEOASData(
+                link: Url.Link("getAuthor", new { id = authorDTO.Id }),
+                description: "self",
+                method: "GET"
+            )
+        );
+
+        authorDTO.Links.Add(
+            new HATEOASData(
+                link: Url.Link("updateAuthor", new { id = authorDTO.Id }),
+                description: "self",
+                method: "PUT"
+            )
+        );
+
+        authorDTO.Links.Add(
+            new HATEOASData(
+                link: Url.Link("deleteAuthor", new { id = authorDTO.Id }),
+                description: "self",
+                method: "DELETE"
+            )
+        );
     }
 }
