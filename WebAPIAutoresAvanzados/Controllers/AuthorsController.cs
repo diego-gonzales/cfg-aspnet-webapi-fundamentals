@@ -125,7 +125,7 @@ public class AuthorsController : ControllerBase
         authorDTO.Links.Add(
             new HATEOASData(
                 link: Url.Link("getAuthor", new { id = authorDTO.Id }),
-                description: "self",
+                description: "Get author detail",
                 method: "GET"
             )
         );
@@ -133,7 +133,7 @@ public class AuthorsController : ControllerBase
         authorDTO.Links.Add(
             new HATEOASData(
                 link: Url.Link("updateAuthor", new { id = authorDTO.Id }),
-                description: "self",
+                description: "Update an author",
                 method: "PUT"
             )
         );
@@ -141,7 +141,7 @@ public class AuthorsController : ControllerBase
         authorDTO.Links.Add(
             new HATEOASData(
                 link: Url.Link("deleteAuthor", new { id = authorDTO.Id }),
-                description: "self",
+                description: "Delete an author",
                 method: "DELETE"
             )
         );

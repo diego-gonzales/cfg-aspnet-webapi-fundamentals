@@ -30,7 +30,7 @@ public class RootController : ControllerBase
         hateoasData.Add(
             new HATEOASData(
                 link: Url.Link("getAuthors", new { }),
-                description: "authors",
+                description: "Get author list",
                 method: "GET"
             )
         );
@@ -40,14 +40,14 @@ public class RootController : ControllerBase
             hateoasData.Add(
                 new HATEOASData(
                     link: Url.Link("createAuthor", new { }),
-                    description: "create-author",
+                    description: "Create an author",
                     method: "POST"
                 )
             );
             hateoasData.Add(
                 new HATEOASData(
                     link: Url.Link("createBook", new { }),
-                    description: "create-book",
+                    description: "Create a book",
                     method: "POST"
                 )
             );
