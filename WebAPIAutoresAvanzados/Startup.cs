@@ -109,8 +109,6 @@ public class Startup
         });
 
         services.AddDataProtection();
-
-        services.AddTransient<HashService>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)

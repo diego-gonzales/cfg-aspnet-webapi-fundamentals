@@ -26,7 +26,7 @@ public class CommentsController : ControllerBase
         this.userManager = userManager;
     }
 
-    [HttpGet]
+    [HttpGet(Name = "getCommentsByBookId")]
     public async Task<ActionResult<List<CommentDTO>>> Get(int bookId)
     {
         var bookExists = await dbContext.Libros.AnyAsync(x => x.Id == bookId);
@@ -57,7 +57,7 @@ public class CommentsController : ControllerBase
     }
 
     // NOTA: Si por ejemplo queremos permitir que usuarios anónimos escriban comentarios, podríamos colocar el [Authorize] a nivel de controlador, y aquí en el método 'Post' podríamos colocar el [AllowAnonymous] (es decir que no va a requerir autenticación: JWT), y hacer una validación, ya que el 'emailClaim' sería null si es que escribe usuario anónimo, de tal manera que solo agregaríamos el 'userId' si es diferente de null.
-    [HttpPost]
+    [HttpPost(Name = "createComment")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult> Post(int bookId, CreateCommentDTO createCommentDTO)
     {
@@ -88,7 +88,7 @@ public class CommentsController : ControllerBase
         return CreatedAtRoute("getComment", new { id = comment.Id }, commentDto);
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:int}", Name = "updateComment")]
     public async Task<ActionResult> Put(int bookId, int id, UpdateCommentDTO updateCommentDTO)
     {
         var bookExists = await dbContext.Libros.AnyAsync(x => x.Id == bookId);
@@ -124,7 +124,7 @@ public class CommentsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("/api/comments/{id:int}")]
+    [HttpDelete("/api/comments/{id:int}", Name = "deleteComment")]
     public async Task<ActionResult> Delete(int id)
     {
         var comment = await dbContext.Comments.FirstOrDefaultAsync(x => x.Id == id);

@@ -19,7 +19,7 @@ public class BooksController : ControllerBase
         this.mapper = mapper;
     }
 
-    [HttpGet]
+    [HttpGet(Name = "getBooks")]
     public async Task<ActionResult<List<BookDTO>>> Get()
     {
         var books = await dbContext.Libros.ToListAsync();
@@ -45,7 +45,7 @@ public class BooksController : ControllerBase
         return mapper.Map<BookWithCommentsAndAuthorsDTO>(book);
     }
 
-    [HttpPost]
+    [HttpPost(Name = "createBook")]
     public async Task<ActionResult> Post(CreateBookDTO createBookDTO)
     {
         var validationResult = await ValidateAuthors(createBookDTO);
@@ -67,7 +67,7 @@ public class BooksController : ControllerBase
         return CreatedAtRoute("getBook", new { id = book.Id }, bookDto);
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:int}", Name = "updateBook")]
     public async Task<ActionResult> Put(int id, CreateBookDTO createBookDTO)
     {
         var validationResult = await ValidateAuthors(createBookDTO);
@@ -95,7 +95,7 @@ public class BooksController : ControllerBase
         return NoContent();
     }
 
-    [HttpPatch("{id:int}")]
+    [HttpPatch("{id:int}", Name = "patchBook")]
     public async Task<ActionResult> Patch(int id, JsonPatchDocument<PatchBookDTO> jsonPatchDocument)
     {
         if (jsonPatchDocument == null)
@@ -128,7 +128,7 @@ public class BooksController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:int}", Name = "deleteBook")]
     public async Task<ActionResult> Delete(int id)
     {
         var book = await dbContext.Libros.FirstOrDefaultAsync(x => x.Id == id);

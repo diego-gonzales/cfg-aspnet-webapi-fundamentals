@@ -26,7 +26,7 @@ public class AuthorsController : ControllerBase
         this.configuration = configuration;
     }
 
-    [HttpGet]
+    [HttpGet(Name = "getAuthors")]
     [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
     public async Task<ActionResult<List<AuthorDTO>>> Get()
     {
@@ -50,7 +50,7 @@ public class AuthorsController : ControllerBase
         return mapper.Map<AuthorWithBooksDTO>(author);
     }
 
-    [HttpPost]
+    [HttpPost(Name = "createAuthor")]
     [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Post(CreateAuthorDTO createAuthorDTO)
     {
@@ -73,7 +73,7 @@ public class AuthorsController : ControllerBase
         return CreatedAtRoute("getAuthor", new { id = author.Id }, authorDto);
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:int}", Name = "updateAuthor")]
     [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Put(int id, UpdateAuthorDTO updateAuthorDTO)
     {
@@ -93,7 +93,7 @@ public class AuthorsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}")]
+    [HttpDelete("{id:int}", Name = "deleteAuthor")]
     [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Delete(int id)
     {
@@ -109,7 +109,7 @@ public class AuthorsController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("{name}")]
+    [HttpGet("{name}", Name = "getAuthorByName")]
     public async Task<ActionResult<List<AuthorDTO>>> GetByName(string name)
     {
         var authors = await dbContext.Autores.Where(x => x.Name.Contains(name)).ToListAsync();

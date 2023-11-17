@@ -18,25 +18,22 @@ public class AuthController : ControllerBase
     private readonly SignInManager<IdentityUser> signInManager;
     private readonly IConfiguration configuration;
     private readonly IDataProtector dataProtector;
-    private readonly HashService hashService;
 
     // 'UserManager' es un servicio que nos permite administrar los usuarios. Debemos pasarle una clase que identifica a un usuario en nuestra app, en nuestro caso la clase por defecto 'IdentityUser' representa un usuario.
     public AuthController(
         UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
         IConfiguration configuration,
-        IDataProtectionProvider dataProtectionProvider, // servicio para realizar la encriptación de datos
-        HashService hashService
+        IDataProtectionProvider dataProtectionProvider // servicio para realizar la encriptación de datos
     )
     {
         this.userManager = userManager;
         this.signInManager = signInManager;
         this.configuration = configuration;
-        this.hashService = hashService;
         dataProtector = dataProtectionProvider.CreateProtector("unique_value_and_secret"); // debería venir de env variables
     }
 
-    [HttpPost("register")]
+    [HttpPost("register", Name = "registerUser")]
     public async Task<ActionResult<AuthResponseDTO>> Register(RegisterDTO registerDTO)
     {
         var user = new IdentityUser() { UserName = registerDTO.Email, Email = registerDTO.Email };
@@ -50,7 +47,7 @@ public class AuthController : ControllerBase
         return BadRequest(result.Errors);
     }
 
-    [HttpPost("login")]
+    [HttpPost("login", Name = "loginUser")]
     public async Task<ActionResult<AuthResponseDTO>> Login(LoginDTO loginDTO)
     {
         var result = await signInManager.PasswordSignInAsync(
@@ -68,7 +65,7 @@ public class AuthController : ControllerBase
         return BadRequest("Login incorrecto. Credenciales son incorrectas");
     }
 
-    [HttpGet("refresh-token")]
+    [HttpGet("refresh-token", Name = "refreshToken")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult<AuthResponseDTO>> Refresh()
     {
@@ -81,7 +78,7 @@ public class AuthController : ControllerBase
         return await GetToken(loginDto);
     }
 
-    [HttpPost("become-admin")]
+    [HttpPost("become-admin", Name = "becomeAdmin")]
     // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public async Task<ActionResult> BecomeAdmin(BecomeAdminDTO becomeAdminDTO)
     {
@@ -90,69 +87,13 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("remove-admin")]
+    [HttpPost("remove-admin", Name = "removeAdmin")]
     // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public async Task<ActionResult> RemoveAdmin(BecomeAdminDTO becomeAdminDTO)
     {
         var user = await userManager.FindByEmailAsync(becomeAdminDTO.Email);
         await userManager.RemoveClaimAsync(user, new Claim("isAdmin", true.ToString()));
         return NoContent();
-    }
-
-    [HttpGet("encrypt-test")]
-    public ActionResult EncryptTest()
-    {
-        var text = "Hola mundo";
-        var encryptedText = dataProtector.Protect(text);
-        var decryptedText = dataProtector.Unprotect(encryptedText);
-        return Ok(
-            new
-            {
-                text,
-                encryptedText,
-                decryptedText
-            }
-        );
-    }
-
-    [HttpGet("encrypt-test-by-lifetime")]
-    public ActionResult EncryptTestByLifetime()
-    {
-        var dataProtectorByLifetime = dataProtector.ToTimeLimitedDataProtector();
-        var text = "Hola mundo";
-        var encryptedText = dataProtectorByLifetime.Protect(
-            text,
-            lifetime: TimeSpan.FromSeconds(5)
-        );
-
-        // aquí simulamos que pasan 6 segundos para que ya no podamos desencriptar el texto
-        Thread.Sleep(6000);
-
-        var decryptedText = dataProtectorByLifetime.Unprotect(encryptedText);
-        return Ok(
-            new
-            {
-                text,
-                encryptedText,
-                decryptedText
-            }
-        );
-    }
-
-    [HttpGet("hash/{text}")]
-    public ActionResult HashText(string text)
-    {
-        var result1 = hashService.Hash(text);
-        var result2 = hashService.Hash(text);
-
-        return Ok(
-            new
-            {
-                plainText = text,
-                hash1 = result1,
-                hash2 = result2
-            }
-        );
     }
 
     private async Task<AuthResponseDTO> GetToken(LoginDTO loginDTO)
