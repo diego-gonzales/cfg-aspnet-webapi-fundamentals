@@ -28,37 +28,40 @@ public class AuthorsController : ControllerBase
 
     [HttpGet(Name = "getAuthors")]
     [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
-    public async Task<ActionResult<ResourceCollection<AuthorDTO>>> Get()
+    public async Task<ActionResult> Get([FromQuery] bool includeHateoas = false)
     {
-        var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
-
         var authors = await dbContext.Autores.ToListAsync();
         var authorDtos = mapper.Map<List<AuthorDTO>>(authors);
 
-        authorDtos.ForEach(authorDto => GenerateLinks(authorDto, isAdmin.Succeeded));
-
-        var resourceCollection = new ResourceCollection<AuthorDTO> { Data = authorDtos };
-
-        resourceCollection.Links.Add(
-            new HATEOASData(
-                link: Url.Link("getAuthors", new { }),
-                description: "Get author list",
-                method: "GET"
-            )
-        );
-
-        if (isAdmin.Succeeded)
+        if (includeHateoas)
         {
+            var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
+            authorDtos.ForEach(authorDto => GenerateLinks(authorDto, isAdmin.Succeeded));
+            var resourceCollection = new ResourceCollection<AuthorDTO> { Data = authorDtos };
+
             resourceCollection.Links.Add(
                 new HATEOASData(
-                    link: Url.Link("createAuthor", new { }),
-                    description: "Create an author",
-                    method: "POST"
+                    link: Url.Link("getAuthors", new { }),
+                    description: "Get author list",
+                    method: "GET"
                 )
             );
+
+            if (isAdmin.Succeeded)
+            {
+                resourceCollection.Links.Add(
+                    new HATEOASData(
+                        link: Url.Link("createAuthor", new { }),
+                        description: "Create an author",
+                        method: "POST"
+                    )
+                );
+            }
+
+            return Ok(resourceCollection);
         }
 
-        return resourceCollection;
+        return Ok(authorDtos);
     }
 
     [HttpGet("{id:int}", Name = "getAuthor")]
