@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Qvs52phdswbmz8oPtw/hbwXaRkJgEMOsjYsZxoOS1zmVrjPZo8jnXQbnnnZ6JMW4Joa46PEhafintLHTbRnQgQ==",
+  "dgSpecHash": "syl5LTNTfFDcv022OpTu/rJxvlNsaBVyezi9lyIGz1LO/90PfJYXiNiTYSL8ensjSC7WAp62DBzWKqDwzXFNFw==",
   "success": true,
-  "projectFilePath": "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj",
+  "projectFilePath": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\WebAPIAutores.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DIEGO\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\DIEGO\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
