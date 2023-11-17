@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPIAutoresResourceManipu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPIAutoresSeguridad", "WebAPIAutoresSeguridad\WebAPIAutoresSeguridad.csproj", "{06232ABD-DA0D-488B-BF14-E2DB8629D83D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPIAutoresAvanzados", "WebAPIAutoresAvanzados\WebAPIAutoresAvanzados.csproj", "{14B3F124-9AFA-48C4-911D-E685DF924EB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{06232ABD-DA0D-488B-BF14-E2DB8629D83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06232ABD-DA0D-488B-BF14-E2DB8629D83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06232ABD-DA0D-488B-BF14-E2DB8629D83D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14B3F124-9AFA-48C4-911D-E685DF924EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14B3F124-9AFA-48C4-911D-E685DF924EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14B3F124-9AFA-48C4-911D-E685DF924EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14B3F124-9AFA-48C4-911D-E685DF924EB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-namespace WebAPIAutoresSeguridad;
+namespace WebAPIAutoresAvanzados;
 
 [ApiController]
 [Route("api/auth")]
