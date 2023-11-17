@@ -13,30 +13,60 @@ public class AuthorsController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
     private readonly IMapper mapper;
-    private readonly IConfiguration configuration;
+    private readonly IAuthorizationService authorizationService;
 
     public AuthorsController(
         ApplicationDbContext dbContext,
         IMapper mapper,
-        IConfiguration configuration
+        IAuthorizationService authorizationService
     )
     {
         this.dbContext = dbContext;
         this.mapper = mapper;
-        this.configuration = configuration;
+        this.authorizationService = authorizationService;
     }
 
     [HttpGet(Name = "getAuthors")]
     [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
-    public async Task<ActionResult<List<AuthorDTO>>> Get()
+    public async Task<ActionResult<ResourceCollection<AuthorDTO>>> Get()
     {
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
+
         var authors = await dbContext.Autores.ToListAsync();
-        return mapper.Map<List<AuthorDTO>>(authors);
+        var authorDtos = mapper.Map<List<AuthorDTO>>(authors);
+
+        authorDtos.ForEach(authorDto => GenerateLinks(authorDto, isAdmin.Succeeded));
+
+        var resourceCollection = new ResourceCollection<AuthorDTO> { Data = authorDtos };
+
+        resourceCollection.Links.Add(
+            new HATEOASData(
+                link: Url.Link("getAuthors", new { }),
+                description: "Get author list",
+                method: "GET"
+            )
+        );
+
+        if (isAdmin.Succeeded)
+        {
+            resourceCollection.Links.Add(
+                new HATEOASData(
+                    link: Url.Link("createAuthor", new { }),
+                    description: "Create an author",
+                    method: "POST"
+                )
+            );
+        }
+
+        return resourceCollection;
     }
 
     [HttpGet("{id:int}", Name = "getAuthor")]
+    [AllowAnonymous]
     public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(int id)
     {
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
+
         var author = await dbContext.Autores
             .Include(author => author.AuthorsBooks)
             .ThenInclude(authorBook => authorBook.Book)
@@ -49,7 +79,7 @@ public class AuthorsController : ControllerBase
 
         var authorWithBooksDTO = mapper.Map<AuthorWithBooksDTO>(author);
 
-        GenerateLinks(authorWithBooksDTO);
+        GenerateLinks(authorWithBooksDTO, isAdmin.Succeeded);
 
         return authorWithBooksDTO;
     }
@@ -120,7 +150,7 @@ public class AuthorsController : ControllerBase
         return mapper.Map<List<AuthorDTO>>(authors);
     }
 
-    private void GenerateLinks(AuthorDTO authorDTO)
+    private void GenerateLinks(AuthorDTO authorDTO, bool isAdmin)
     {
         authorDTO.Links.Add(
             new HATEOASData(
@@ -130,20 +160,23 @@ public class AuthorsController : ControllerBase
             )
         );
 
-        authorDTO.Links.Add(
-            new HATEOASData(
-                link: Url.Link("updateAuthor", new { id = authorDTO.Id }),
-                description: "Update an author",
-                method: "PUT"
-            )
-        );
+        if (isAdmin)
+        {
+            authorDTO.Links.Add(
+                new HATEOASData(
+                    link: Url.Link("updateAuthor", new { id = authorDTO.Id }),
+                    description: "Update an author",
+                    method: "PUT"
+                )
+            );
 
-        authorDTO.Links.Add(
-            new HATEOASData(
-                link: Url.Link("deleteAuthor", new { id = authorDTO.Id }),
-                description: "Delete an author",
-                method: "DELETE"
-            )
-        );
+            authorDTO.Links.Add(
+                new HATEOASData(
+                    link: Url.Link("deleteAuthor", new { id = authorDTO.Id }),
+                    description: "Delete an author",
+                    method: "DELETE"
+                )
+            );
+        }
     }
 }
