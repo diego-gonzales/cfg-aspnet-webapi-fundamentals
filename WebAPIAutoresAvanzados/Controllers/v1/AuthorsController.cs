@@ -96,6 +96,11 @@ public class AuthorsController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Remove an author
+    /// </summary>
+    /// <param name="id">Author ID to remove</param>
+    /// <returns></returns>
     [HttpDelete("{id:int}", Name = "deleteAuthor")]
     [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Delete(int id)
