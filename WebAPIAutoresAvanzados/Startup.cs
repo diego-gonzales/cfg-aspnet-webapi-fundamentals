@@ -29,6 +29,9 @@ public class Startup
                 new OpenApiInfo() { Title = "Web Api Autores", Version = "v1" }
             );
 
+            // Configuración de swagger para agregar el parámetro 'includeHATEOAS' a todos los endpoints
+            options.OperationFilter<AddHATEOASParameter>();
+
             options.AddSecurityDefinition(
                 "Bearer",
                 new OpenApiSecurityScheme

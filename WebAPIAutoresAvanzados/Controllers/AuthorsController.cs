@@ -29,7 +29,7 @@ public class AuthorsController : ControllerBase
     [HttpGet(Name = "getAuthors")]
     [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
     [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
-    public async Task<ActionResult<List<AuthorDTO>>> Get([FromHeader] string includeHateoas)
+    public async Task<ActionResult<List<AuthorDTO>>> Get()
     {
         var authors = await dbContext.Autores.ToListAsync();
         return mapper.Map<List<AuthorDTO>>(authors);
@@ -38,10 +38,7 @@ public class AuthorsController : ControllerBase
     [HttpGet("{id:int}", Name = "getAuthor")]
     [AllowAnonymous]
     [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
-    public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(
-        int id,
-        [FromHeader] string includeHateoas
-    )
+    public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(int id)
     {
         var author = await dbContext.Autores
             .Include(author => author.AuthorsBooks)
