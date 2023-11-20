@@ -29,6 +29,11 @@ public class Startup
                 new OpenApiInfo() { Title = "Web Api Autores", Version = "v1" }
             );
 
+            options.SwaggerDoc(
+                "v2",
+                new OpenApiInfo() { Title = "Web Api Autores", Version = "v2" }
+            );
+
             // Configuración de swagger para agregar el parámetro 'includeHATEOAS' a todos los endpoints
             options.OperationFilter<AddHATEOASParameter>();
 
@@ -63,7 +68,10 @@ public class Startup
         });
 
         services
-            .AddControllers()
+            .AddControllers(options =>
+            {
+                options.Conventions.Add(new SwaggerGroupByVersion());
+            })
             .AddJsonOptions(
                 options =>
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
@@ -124,7 +132,11 @@ public class Startup
         if (environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API Autores v1");
+                options.SwaggerEndpoint("/swagger/v2/swagger.json", "Web API Autores v2");
+            });
         }
 
         app.UseHttpsRedirection();

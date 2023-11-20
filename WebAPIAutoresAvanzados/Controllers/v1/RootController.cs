@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPIAutoresAvanzados;
+namespace WebAPIAutoresAvanzados.Controllers.v1;
 
 [ApiController]
 [Route("api/v1")]

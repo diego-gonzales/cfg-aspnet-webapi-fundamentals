@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebAPIAutoresAvanzados;
+namespace WebAPIAutoresAvanzados.Controllers.v1;
 
 [ApiController]
 [Route("api/v1/authors")]
