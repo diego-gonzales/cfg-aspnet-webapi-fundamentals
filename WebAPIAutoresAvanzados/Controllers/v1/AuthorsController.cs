@@ -9,6 +9,7 @@ namespace WebAPIAutoresAvanzados.Controllers.v1;
 [ApiController]
 [Route("api/v1/authors")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[ApiConventionType(typeof(DefaultApiConventions))] // para que swagger sepa que convenciones debo usar. Es una alternativa a colocar [ProducesResponseType(200)] en cada endpoint. La podemos colocar de manera global (ver Startup.cs)
 public class AuthorsController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
@@ -38,6 +39,8 @@ public class AuthorsController : ControllerBase
     [HttpGet("{id:int}", Name = "getAuthor")]
     [AllowAnonymous]
     [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
+    [ProducesResponseType(200)] // indica que el endpoint devuelve un 200. Es opcional, sirve para documentar (Swagger)
+    [ProducesResponseType(404)] // indica que el endpoint devuelve un 404. Es opcional, sirve para documentar (Swagger)
     public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(int id)
     {
         var author = await dbContext.Autores
