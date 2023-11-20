@@ -17,7 +17,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\" />
-    <Folder Include="Utilities\" />
     <Folder Include="Validations\" />
   </ItemGroup>
 </Project>

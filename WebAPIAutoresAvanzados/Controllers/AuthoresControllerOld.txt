@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +35,8 @@ public class AuthorsController : ControllerBase
 
         if (includeHateoas)
         {
-            // authorDtos.ForEach(async (authorDto) => await GenerateLinks(authorDto));
+            var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
+            authorDtos.ForEach(authorDto => GenerateLinks(authorDto, isAdmin.Succeeded));
             var resourceCollection = new ResourceCollection<AuthorDTO> { Data = authorDtos };
 
             resourceCollection.Links.Add(
@@ -45,8 +46,6 @@ public class AuthorsController : ControllerBase
                     method: "GET"
                 )
             );
-
-            var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
 
             if (isAdmin.Succeeded)
             {
@@ -67,12 +66,10 @@ public class AuthorsController : ControllerBase
 
     [HttpGet("{id:int}", Name = "getAuthor")]
     [AllowAnonymous]
-    [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
-    public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(
-        int id,
-        [FromHeader] string includeHateoas
-    )
+    public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(int id)
     {
+        var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
+
         var author = await dbContext.Autores
             .Include(author => author.AuthorsBooks)
             .ThenInclude(authorBook => authorBook.Book)
@@ -83,7 +80,11 @@ public class AuthorsController : ControllerBase
             return NotFound();
         }
 
-        return mapper.Map<AuthorWithBooksDTO>(author);
+        var authorWithBooksDTO = mapper.Map<AuthorWithBooksDTO>(author);
+
+        GenerateLinks(authorWithBooksDTO, isAdmin.Succeeded);
+
+        return authorWithBooksDTO;
     }
 
     [HttpPost(Name = "createAuthor")]
@@ -150,5 +151,35 @@ public class AuthorsController : ControllerBase
     {
         var authors = await dbContext.Autores.Where(x => x.Name.Contains(name)).ToListAsync();
         return mapper.Map<List<AuthorDTO>>(authors);
+    }
+
+    private void GenerateLinks(AuthorDTO authorDTO, bool isAdmin)
+    {
+        authorDTO.Links.Add(
+            new HATEOASData(
+                link: Url.Link("getAuthor", new { id = authorDTO.Id }),
+                description: "Get author detail",
+                method: "GET"
+            )
+        );
+
+        if (isAdmin)
+        {
+            authorDTO.Links.Add(
+                new HATEOASData(
+                    link: Url.Link("updateAuthor", new { id = authorDTO.Id }),
+                    description: "Update an author",
+                    method: "PUT"
+                )
+            );
+
+            authorDTO.Links.Add(
+                new HATEOASData(
+                    link: Url.Link("deleteAuthor", new { id = authorDTO.Id }),
+                    description: "Delete an author",
+                    method: "DELETE"
+                )
+            );
+        }
     }
 }
