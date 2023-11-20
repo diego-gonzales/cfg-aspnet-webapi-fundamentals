@@ -26,7 +26,19 @@ public class Startup
         {
             options.SwaggerDoc(
                 "v1",
-                new OpenApiInfo() { Title = "Web Api Autores", Version = "v1" }
+                new OpenApiInfo()
+                {
+                    Title = "Web Api Autores",
+                    Version = "v1",
+                    Description = "Esta es una web api para trabajar con libros y autores",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Diego Gonzales",
+                        Email = "diego@email.com",
+                        Url = new Uri("https://github.com/diego-gonzales")
+                    },
+                    License = new OpenApiLicense { Name = "MIT" }
+                }
             );
 
             options.SwaggerDoc(
