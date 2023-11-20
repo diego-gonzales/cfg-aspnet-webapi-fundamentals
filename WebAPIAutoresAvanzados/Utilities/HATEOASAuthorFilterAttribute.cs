@@ -26,11 +26,25 @@ public class HATEOASAuthorFilterAttribute : HATEOASFilterAttribute
         }
 
         var result = context.Result as ObjectResult;
-        var model =
-            result.Value as AuthorDTO
-            ?? throw new ArgumentNullException("Se esperaba una instancia de AuthorDTO");
+        var authorDto = result.Value as AuthorDTO;
 
-        await linksGenerator.GenerateLinks(model);
+        if (authorDto == null)
+        {
+            var authorDtos =
+                result.Value as List<AuthorDTO>
+                ?? throw new ArgumentException(
+                    "Se esperaba una instancia de 'AuthorDTO' o 'List<AuthorDTO>'"
+                );
+
+            authorDtos.ForEach(async authorDto => await linksGenerator.GenerateLinks(authorDto));
+
+            result.Value = authorDtos;
+        }
+        else
+        {
+            await linksGenerator.GenerateLinks(authorDto);
+        }
+
         await next();
     }
 }

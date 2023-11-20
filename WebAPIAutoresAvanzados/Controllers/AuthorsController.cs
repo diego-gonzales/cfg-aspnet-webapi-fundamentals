@@ -28,41 +28,11 @@ public class AuthorsController : ControllerBase
 
     [HttpGet(Name = "getAuthors")]
     [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
-    public async Task<ActionResult> Get([FromQuery] bool includeHateoas = false)
+    [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
+    public async Task<ActionResult<List<AuthorDTO>>> Get([FromHeader] string includeHateoas)
     {
         var authors = await dbContext.Autores.ToListAsync();
-        var authorDtos = mapper.Map<List<AuthorDTO>>(authors);
-
-        if (includeHateoas)
-        {
-            // authorDtos.ForEach(async (authorDto) => await GenerateLinks(authorDto));
-            var resourceCollection = new ResourceCollection<AuthorDTO> { Data = authorDtos };
-
-            resourceCollection.Links.Add(
-                new HATEOASData(
-                    link: Url.Link("getAuthors", new { }),
-                    description: "Get author list",
-                    method: "GET"
-                )
-            );
-
-            var isAdmin = await authorizationService.AuthorizeAsync(User, "isAdmin");
-
-            if (isAdmin.Succeeded)
-            {
-                resourceCollection.Links.Add(
-                    new HATEOASData(
-                        link: Url.Link("createAuthor", new { }),
-                        description: "Create an author",
-                        method: "POST"
-                    )
-                );
-            }
-
-            return Ok(resourceCollection);
-        }
-
-        return Ok(authorDtos);
+        return mapper.Map<List<AuthorDTO>>(authors);
     }
 
     [HttpGet("{id:int}", Name = "getAuthor")]
