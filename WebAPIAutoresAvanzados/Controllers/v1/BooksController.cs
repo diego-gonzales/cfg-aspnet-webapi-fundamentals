@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace WebAPIAutoresAvanzados;
 
 [ApiController]
-[Route("api/books")]
+[Route("api/v1/books")]
 public class BooksController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;

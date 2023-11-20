@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebAPIAutoresAvanzados;
+namespace WebAPIAutoresAvanzados.Controllers.v2;
 
 [ApiController]
-[Route("api/authors")]
+[Route("api/v2/authors")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class AuthorsController : ControllerBase
 {
@@ -26,16 +26,18 @@ public class AuthorsController : ControllerBase
         this.authorizationService = authorizationService;
     }
 
-    [HttpGet(Name = "getAuthors")]
+    [HttpGet(Name = "getAuthorsv2")]
     [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
     [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
     public async Task<ActionResult<List<AuthorDTO>>> Get()
     {
         var authors = await dbContext.Autores.ToListAsync();
+        authors.ForEach(author => author.Name = author.Name.ToUpper());
+
         return mapper.Map<List<AuthorDTO>>(authors);
     }
 
-    [HttpGet("{id:int}", Name = "getAuthor")]
+    [HttpGet("{id:int}", Name = "getAuthorv2")]
     [AllowAnonymous]
     [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
     public async Task<ActionResult<AuthorWithBooksDTO>> GetOne(int id)
@@ -53,7 +55,7 @@ public class AuthorsController : ControllerBase
         return mapper.Map<AuthorWithBooksDTO>(author);
     }
 
-    [HttpPost(Name = "createAuthor")]
+    [HttpPost(Name = "createAuthorv2")]
     [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Post(CreateAuthorDTO createAuthorDTO)
     {
@@ -73,10 +75,10 @@ public class AuthorsController : ControllerBase
 
         var authorDto = mapper.Map<AuthorDTO>(author);
 
-        return CreatedAtRoute("getAuthor", new { id = author.Id }, authorDto);
+        return CreatedAtRoute("getAuthorv2", new { id = author.Id }, authorDto);
     }
 
-    [HttpPut("{id:int}", Name = "updateAuthor")]
+    [HttpPut("{id:int}", Name = "updateAuthorv2")]
     [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Put(int id, UpdateAuthorDTO updateAuthorDTO)
     {
@@ -96,7 +98,7 @@ public class AuthorsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id:int}", Name = "deleteAuthor")]
+    [HttpDelete("{id:int}", Name = "deleteAuthorv2")]
     [Authorize(Policy = "IsAdmin")]
     public async Task<ActionResult> Delete(int id)
     {
@@ -112,7 +114,7 @@ public class AuthorsController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("{name}", Name = "getAuthorByName")]
+    [HttpGet("{name}", Name = "getAuthorByNamev2")]
     public async Task<ActionResult<List<AuthorDTO>>> GetByName(string name)
     {
         var authors = await dbContext.Autores.Where(x => x.Name.Contains(name)).ToListAsync();

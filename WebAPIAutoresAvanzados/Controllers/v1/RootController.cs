@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebAPIAutoresAvanzados;
 
 [ApiController]
-[Route("api")]
+[Route("api/v1")]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class RootController : ControllerBase
 {

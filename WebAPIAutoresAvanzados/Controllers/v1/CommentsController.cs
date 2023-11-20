@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace WebAPIAutoresAvanzados;
 
 [ApiController]
-[Route("api/books/{bookId}/comments")]
+[Route("api/v1/books/{bookId}/comments")]
 public class CommentsController : ControllerBase
 {
     private readonly ApplicationDbContext dbContext;
@@ -40,7 +40,7 @@ public class CommentsController : ControllerBase
         return mapper.Map<List<CommentDTO>>(comments);
     }
 
-    [HttpGet("/api/comments/{id:int}", Name = "getComment")]
+    [HttpGet("/api/v1/comments/{id:int}", Name = "getComment")]
     public async Task<ActionResult<CommentWithBookDTO>> GetOne(int id)
     {
         var comment = await dbContext.Comments
@@ -124,7 +124,7 @@ public class CommentsController : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("/api/comments/{id:int}", Name = "deleteComment")]
+    [HttpDelete("/api/v1/comments/{id:int}", Name = "deleteComment")]
     public async Task<ActionResult> Delete(int id)
     {
         var comment = await dbContext.Comments.FirstOrDefaultAsync(x => x.Id == id);
