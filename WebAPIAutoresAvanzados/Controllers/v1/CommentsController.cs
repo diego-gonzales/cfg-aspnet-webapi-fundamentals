@@ -27,7 +27,10 @@ public class CommentsController : ControllerBase
     }
 
     [HttpGet(Name = "getCommentsByBookId")]
-    public async Task<ActionResult<List<CommentDTO>>> Get(int bookId)
+    public async Task<ActionResult<List<CommentDTO>>> Get(
+        int bookId,
+        [FromQuery] PaginationDTO paginationDTO
+    )
     {
         var bookExists = await dbContext.Libros.AnyAsync(x => x.Id == bookId);
 
@@ -36,7 +39,13 @@ public class CommentsController : ControllerBase
             return NotFound();
         }
 
-        var comments = await dbContext.Comments.Where(x => x.BookId == bookId).ToListAsync();
+        var queryable = dbContext.Comments.Where(x => x.BookId == bookId).AsQueryable();
+        await HttpContext.InsertPaginationParameterInHeader(queryable);
+
+        var comments = await queryable
+            .OrderBy(comment => comment.Id)
+            .Paginate(paginationDTO)
+            .ToListAsync();
         return mapper.Map<List<CommentDTO>>(comments);
     }
 
