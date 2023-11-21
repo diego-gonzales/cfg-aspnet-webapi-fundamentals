@@ -136,8 +136,12 @@ public class Startup
         {
             options.AddDefaultPolicy(builder =>
             {
-                builder.WithOrigins("").AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader();
-                // .WithExposedHeaders();
+                builder
+                    .WithOrigins("")
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .WithExposedHeaders(new string[] { "totalItems" });
             });
         });
 

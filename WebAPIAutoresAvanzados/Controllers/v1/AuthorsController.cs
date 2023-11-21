@@ -30,9 +30,16 @@ public class AuthorsController : ControllerBase
     [HttpGet(Name = "getAuthors")]
     [AllowAnonymous] // me permite consultar el endpoint sin necesidad de authorization (JWT)
     [ServiceFilter(typeof(HATEOASAuthorFilterAttribute))]
-    public async Task<ActionResult<List<AuthorDTO>>> Get()
+    public async Task<ActionResult<List<AuthorDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
     {
-        var authors = await dbContext.Autores.ToListAsync();
+        var queryable = dbContext.Autores.AsQueryable();
+        await HttpContext.InsertPaginationParameterInHeader(queryable);
+
+        // var authors = await dbContext.Autores.ToListAsync();
+        var authors = await queryable
+            .OrderBy(author => author.Id)
+            .Paginate(paginationDTO)
+            .ToListAsync();
         return mapper.Map<List<AuthorDTO>>(authors);
     }
 
