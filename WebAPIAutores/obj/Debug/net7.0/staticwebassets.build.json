@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "p95mZR5iTbrpI/LoeXxNPSrunsClzO1TZHhdtwgPkTo=",
+  "Hash": "ShenOcxEFaxeuzUMymEMGAVvqhkx0NY+btOx1P+xkEE=",
   "Source": "WebAPIAutores",
   "BasePath": "_content/WebAPIAutores",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "WebAPIAutores\\wwwroot",
       "Source": "WebAPIAutores",
-      "ContentRoot": "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\wwwroot\\",
+      "ContentRoot": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\wwwroot\\",
       "BasePath": "_content/WebAPIAutores",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\wwwroot\\MyFile.txt",
+      "Identity": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\wwwroot\\MyFile.txt",
       "SourceId": "WebAPIAutores",
       "SourceType": "Discovered",
-      "ContentRoot": "d:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\wwwroot\\",
+      "ContentRoot": "D:\\Online Courses\\ASP.NET Core - Web APIs RESTful\\WebAPIAutores\\wwwroot\\",
       "BasePath": "_content/WebAPIAutores",
       "RelativePath": "MyFile.txt",
       "AssetKind": "All",
