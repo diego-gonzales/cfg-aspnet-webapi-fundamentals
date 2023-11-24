@@ -57,4 +57,4 @@ public class RootController : ControllerBase
     }
 }
 
-/* Más adelante haremos pruebas unitarias de este controlador, y vamos a necesitar hacer 2 mocks, ya que este controlador depende de: 'IAuthorizationService' (declarado en el contructor) y 'IUrlHelper' (No está declarado pero viene de la clase 'ControllerBase' que estamos heredando) */
+/* Más adelante haremos pruebas unitarias de este controlador, y vamos a necesitar hacer 2 mocks, ya que este controlador tiene dos dependencias: 'IAuthorizationService' (declarado en el contructor) y 'IUrlHelper' (No está declarado pero viene de la clase 'ControllerBase' que estamos heredando) */
