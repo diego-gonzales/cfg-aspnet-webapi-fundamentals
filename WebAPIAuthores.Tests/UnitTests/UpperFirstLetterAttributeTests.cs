@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using WebAPIAutores;
+using WebAPIAutoresAvanzados;
 
 namespace WebAPIAuthores.Tests;
 
@@ -18,7 +18,7 @@ public class UpperFirstLetterAttributeTests
         var result = upperFirstLetter.GetValidationResult(testValue, validationContext);
 
         // Verificar
-        Assert.AreEqual("La primera letra del campo  debe ser mayúscula", result?.ErrorMessage);
+        Assert.AreEqual("La primera letra del campo  debe ser mayúscula", result.ErrorMessage);
     }
 
     [TestMethod]
