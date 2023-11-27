@@ -156,13 +156,15 @@ public class Startup
     {
         if (environment.IsDevelopment())
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API Autores v1");
-                options.SwaggerEndpoint("/swagger/v2/swagger.json", "Web API Autores v2");
-            });
+            app.UseDeveloperExceptionPage();
         }
+
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API Autores v1");
+            options.SwaggerEndpoint("/swagger/v2/swagger.json", "Web API Autores v2");
+        });
 
         app.UseHttpsRedirection();
         app.UseRouting();
