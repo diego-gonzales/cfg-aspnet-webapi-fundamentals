@@ -150,6 +150,12 @@ public class Startup
         services.AddTransient<LinksGenerator>();
         services.AddTransient<HATEOASAuthorFilterAttribute>();
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+        // Configuración de 'Application Insights'
+        services.AddApplicationInsightsTelemetry(actions =>
+        {
+            actions.ConnectionString = Configuration["ApplicationInsights:ConnectionString"];
+        });
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
