@@ -107,7 +107,7 @@ public class AuthorsController : ControllerBase
     }
 
     /// <summary>
-    /// Remove an author
+    /// Remove an author (This change is only to try CI/CD in Azure DevOps)
     /// </summary>
     /// <param name="id">Author ID to remove</param>
     /// <returns></returns>
