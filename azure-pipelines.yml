@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'vs2017-win2016'
+  vmImage: 'windows-2022'
 
 variables:
   buildConfiguration: 'Release'
@@ -30,7 +30,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: $(proyecto)
-    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) --runtime win-x86 --self-contained'
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) --runtime win-x86 --no-self-contained'
     zipAfterPublish: false
     modifyOutputPath: false
 - task: PublishBuildArtifacts@1
